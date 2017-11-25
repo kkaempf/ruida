@@ -1,0 +1,46 @@
+#!/usr/bin/ruby
+#
+# decode.rb
+#
+# Decode RD file
+#
+# Usage:
+#   decode.rb                  # Reads from stdin
+#   decode.rb <rd-file1> ...   # Reads from file(s)
+#
+
+$:.push(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'ruida'
+
+class Decoder
+  def initialize path=nil
+    if path
+      raise "Empty path" if path.empty?
+      @path = path
+      @file = File.open(path, 'r')
+      raise "Can't open #{path}" unless path
+    else
+      @file = STDIN
+      STDERR.puts "Reading from stdin"
+    end
+    @file.binmode
+  end
+  
+  def dump to=STDOUT
+    rd = Ruida::Data.new @file.read
+    parser = Ruida::Parser.new rd
+    parser.each do |c|
+      to.puts c
+    end
+  end
+end
+
+if ARGV.size == 0
+  dis = Decoder.new
+  dis.dump
+else
+  ARGV.each do |path|
+    dis = Decoder.new path
+    dis.dump
+  end
+end

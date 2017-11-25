@@ -1,0 +1,45 @@
+#!/usr/bin/ruby
+#
+# dump.rb
+#
+# Hexdump RD file
+#
+# Usage:
+#   dump.rb                  # Reads from stdin
+#   dump.rb <rd-file1> ...   # Reads from file(s)
+#
+
+$:.push(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'ruida'
+
+class Dump
+  def initialize path=nil
+    if path
+      raise "Empty path" if path.empty?
+      @path = path
+      @file = File.open(path, 'r')
+      raise "Can't open #{path}" unless path
+    else
+      @file = STDIN
+      STDERR.puts "Reading from stdin"
+    end
+    @file.binmode
+  end
+  
+  def dump to=STDOUT
+    data = Ruida::Data.new @file.read
+    data.each do |c|
+      to.printf "%02x ", c
+    end
+  end
+end
+
+if ARGV.size == 0
+  dis = Dump.new
+  dis.dump
+else
+  ARGV.each do |path|
+    dis = Dump.new path
+    dis.dump
+  end
+end
