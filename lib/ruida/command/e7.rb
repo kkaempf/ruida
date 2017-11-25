@@ -1,27 +1,27 @@
 module Ruida
   class Cmd_e7 < Cmd
-    def initialize data
-      super data
-      @sub = consume
-      case @sub
-      when 0x00
-      when 0x03, 0x06, 0x07, 0x50, 0x51
-        consume 10
-      when 0x04, 0x08
-        consume 14
-      when 0x05
-        consume 9
-      when 0x13, 0x17, 0x23
-        consume 10
-      when 0x52, 0x53, 0x61, 0x62
-        consume 11
-      when 0x54, 0x55
-        consume 6
-      when 0x24, 0x60
-        consume 1
-      else
-        printf "E7 %02x\n", @sub
-      end
+    def self.format
+      { 0x00 => ["E7 00"],
+        0x03 => ["E7 03", :abs, :abs],
+        0x04 => ["E7 04", -14],
+        0x05 => ["E7 05", -9],
+        0x06 => ["E7 06", :abs, :abs],
+        0x07 => ["E7 07", :abs, :abs],
+        0x08 => ["E7 08", -14],
+        0x13 => ["E7 13", :abs, :abs],
+        0x17 => ["E7 17", :abs, :abs],
+        0x23 => ["E7 23", :abs, :abs],
+        0x24 => ["E7 24", -1],
+        0x50 => ["E7 50", :abs, :abs],
+        0x51 => ["E7 51", :abs, :abs],
+        0x52 => ["E7 52", -11],
+        0x53 => ["E7 53", -11],
+        0x54 => ["E7 54", -6],
+        0x55 => ["E7 55", -6],
+        0x60 => ["E7 60", -1],
+        0x61 => ["E7 61", -11],
+        0x62 => ["E7 62", -11]
+      }
     end
   end
 end

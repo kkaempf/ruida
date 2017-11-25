@@ -1,8 +1,7 @@
 module Ruida
   class Cmd_c2 < Cmd
-    def initialize data
-      super data
-      consume 2
+    def self.format
+      [ "C2", -2 ]
     end
   end
 end

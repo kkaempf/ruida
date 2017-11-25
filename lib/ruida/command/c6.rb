@@ -1,30 +1,28 @@
 module Ruida
   class Cmd_c6 < Cmd
-    def initialize data
-      super data
-      @sub = consume
-      case @sub
-      when 0x01, 0x02
-        consume 2
-      when 0x05, 0x06, 0x07, 0x08
-        consume 2
-      when 0x10
-        consume 5
-      when 0x12, 0x13
-        consume 5
-      when 0x15, 0x16
-        consume 5
-      when 0x21, 0x22
-        consume 2
-      when 0x31, 0x32
-        consume 3
-      when 0x35, 0x36, 0x37, 0x38
-        consume 3
-      when 0x41, 0x42
-        consume 3
-      else
-        printf "C6 %02x @ %d", @sub, data.pos
-      end
+    def self.format
+      { 0x01 => ["C6 01", -2],
+        0x02 => ["C6 02", -2],
+        0x05 => ["C6 05", -2],
+        0x06 => ["C6 06", -2],
+        0x07 => ["C6 07", -2],
+        0x08 => ["C6 08", -2],
+        0x10 => ["C6 10", -5],
+        0x12 => ["C6 12", -5],
+        0x13 => ["C6 13", -5],
+        0x15 => ["C6 15", -5],
+        0x16 => ["C6 16", -5],
+        0x21 => ["C6 21", -2],
+        0x22 => ["C6 22", -2],
+        0x31 => ["C6 31", -3],
+        0x32 => ["C6 32", -3],
+        0x35 => ["C6 35", -3],
+        0x36 => ["C6 36", -3],
+        0x37 => ["C6 37", -3],
+        0x38 => ["C6 38", -3],
+        0x41 => ["C6 41", -3],
+        0x42 => ["C6 42", -3]
+    }
     end
   end
 end

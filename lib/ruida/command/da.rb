@@ -1,8 +1,7 @@
 module Ruida
   class Cmd_da < Cmd
-    def initialize data
-      super data
-      consume 13
+    def self.format
+      [ "DA", -13 ]
     end
   end
 end

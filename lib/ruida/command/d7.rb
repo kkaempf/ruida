@@ -1,6 +1,7 @@
 module Ruida
   class Cmd_d7 < Cmd
-    def initialize data
+    def self.format
+      [ "Stop" ]
     end
   end
 end

@@ -8,8 +8,9 @@ module Ruida
       begin
         require "ruida/command/"+hex
         klass = Ruida::const_get "Cmd_"+hex
-        c = klass.new data if klass
-        klass
+        cmd = klass.new data if klass
+        cmd.interprete
+        cmd
       rescue LoadError
         puts "Unknown #{hex} @ #{data.pos}"
       end
