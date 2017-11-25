@@ -49,6 +49,8 @@ module Ruida
           @args << abscoord
         when :speed
           @args << "#{speed} mm/s"
+        when :power
+          @args << "#{power} %"
         else
           STDERR.puts "Can't interprete #{f.inspect}"
         end
@@ -71,7 +73,7 @@ module Ruida
     end
     # power in 0,006103516% (100/2^14)
     def power
-      p = consume 2
+      (number(2).to_f * (100.0/(2 ** 14))).round
     end
     # number of n hex values
     def number n
