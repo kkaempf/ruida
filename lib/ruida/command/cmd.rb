@@ -43,11 +43,11 @@ module Ruida
             end
           end
         when :abs
-          @args << abscoord
+          @args << "#{abscoord}mm"
         when :speed
-          @args << "#{speed} mm/s"
+          @args << "#{speed}mm/s"
         when :power
-          @args << "#{power} %"
+          @args << "#{power}%"
         else
           STDERR.puts "Can't interprete #{f.inspect}"
         end
@@ -82,9 +82,9 @@ module Ruida
       end
       res
     end
-    # absolute position relative to job origin in µm
+    # absolute position relative to job origin in mm
     def abscoord
-      number(5).to_f
+      number(5).to_f / 1000.0
     end
     # relative position in µm; signed (2s complement)
     def relcoord
