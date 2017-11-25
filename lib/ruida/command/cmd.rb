@@ -44,6 +44,8 @@ module Ruida
           end
         when :abs
           @args << "#{abscoord}mm"
+        when :rel
+          @args << "#{relcoord}mm"
         when :speed
           @args << "#{speed}mm/s"
         when :power
@@ -88,7 +90,9 @@ module Ruida
     end
     # relative position in µm; signed (2s complement)
     def relcoord
-      r = consume 2
+      r = consume << 8
+      r += consume
+      ((r > 32767) ? 65536-r : r) / 1000.0
     end
     # speed in m/s
     def speed
