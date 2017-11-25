@@ -7,12 +7,7 @@ module Ruida
     #          :abs - consume absolute coordinate
     #
     def interprete
-      format = begin
-        self.class.format
-      rescue NameError
-        puts "#{self.class.name} has no format descriptor"
-        return
-      end
+      format = self.class.format
 #      puts "format #{format.class}:#{format.inspect}"
       case format
       when Array
@@ -33,6 +28,8 @@ module Ruida
         f = format.shift
 #        puts "interprete item #{f.inspect}"
         case f
+        when String
+          self.send f.to_sym
         when Integer
           if f >= -1
             v = consume
