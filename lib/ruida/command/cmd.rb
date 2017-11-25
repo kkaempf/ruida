@@ -47,6 +47,8 @@ module Ruida
           end
         when :abs
           @args << abscoord
+        when :speed
+          @args << "#{speed} mm/s"
         else
           STDERR.puts "Can't interprete #{f.inspect}"
         end
@@ -71,22 +73,27 @@ module Ruida
     def power
       p = consume 2
     end
+    # number of n hex values
+    def number n
+      fak = 1
+      res = 0
+      consume(n).reverse.each do |b|
+        res += fak * b
+        fak *= 0x80
+      end
+      res
+    end
     # absolute position relative to job origin in µm
     def abscoord
-      pos = 0
-      5.times do |_|
-        pos <<= 8
-        pos += consume
-      end
-      pos.to_f
+      number(5).to_f
     end
     # relative position in µm; signed (2s complement)
     def relcoord
       r = consume 2
     end
-    # speed in µm/s
+    # speed in m/s
     def speed
-      s = consume 5
+      number(5).to_f / 1000.0
     end
     # zero terminated string
     def cstring
