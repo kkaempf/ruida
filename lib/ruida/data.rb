@@ -47,6 +47,10 @@ module Ruida
     def to_s
       "RD #{@size} bytes"
     end
+    # getter
+    def [] pos
+      @data[pos]
+    end
     # Enumerator
     def each(&block)
       loop do
