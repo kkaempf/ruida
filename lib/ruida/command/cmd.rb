@@ -63,13 +63,15 @@ module Ruida
     end
     def to_s
       s = ""
-      for i in @pos...@pos+@length do
-        s << "%02x " % @data[i]
-      end
-      s << "\t"
       s << (@name || self.class.name)
       @args.each do |a|
         s << " #{a}"
+      end
+      (6-(s.size / 8)).times do
+        s << "\t"
+      end
+      for i in @pos...@pos+@length do
+        s << "%02x " % @data[i]
       end
       s
     end
