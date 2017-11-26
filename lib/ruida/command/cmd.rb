@@ -34,7 +34,7 @@ module Ruida
           if f >= -1
             v = consume
             if f >= 0 && v != f
-              STDERR.printf "#{self.class}: expected %02x, got %02x", f, v
+              STDERR.printf "%05x: #{self.class}#{@args.inspect}: expected %02x, got %02x\n", @data.pos, f, v
             end
             @args << "%02x" % v
           else
@@ -90,9 +90,11 @@ module Ruida
     end
     # relative position in µm; signed (2s complement)
     def relcoord
+#      r = number(2)
       r = consume << 8
       r += consume
-      ((r > 32767) ? 65536-r : r) / 1000.0
+      ((r > 32767) ? r-65536 : r) / 1000.0
+#      r += consume
     end
     # speed in m/s
     def speed
