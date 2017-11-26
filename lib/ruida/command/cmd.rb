@@ -54,13 +54,20 @@ module Ruida
           STDERR.puts "Can't interprete #{f.inspect}"
         end
       end
+      @length = @data.pos - @pos
     end
     def initialize data
+      @pos = data.pos - 1
       @data = data
       @args = []
     end
     def to_s
-      s = @name || self.class.name
+      s = ""
+      for i in @pos...@pos+@length do
+        s << "%02x " % @data[i]
+      end
+      s << "\t"
+      s << (@name || self.class.name)
       @args.each do |a|
         s << " #{a}"
       end
