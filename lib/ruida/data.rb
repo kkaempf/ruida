@@ -19,8 +19,14 @@ module Ruida
       checksum += raw[1,1].ord
       @filetype = raw[2,1].ord
       # D2 9B FA
-      raise "Not a RD file " unless @filetype == 0xfa
-      @@magic = 0x88
+      @@magic = case @filetype
+    when 0xfa # Model 320, 633x, 644xg, 644xs, 654xs
+        0x88
+      when 0x61 # Model 634xg
+        0x11
+      else
+        raise "Not a RD file: expecting 0xfa, got 0x%02x" % @filetype
+      end
       checksum
     end
     public
