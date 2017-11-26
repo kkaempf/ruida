@@ -25,12 +25,20 @@ class Dump
     end
     @file.binmode
   end
-  
+  def dump_pos to, pos
+    to.printf "\n%05x: ", pos
+  end
   def dump to=STDOUT
     data = Ruida::Data.new @file.read
+    dump_pos to, data.pos
     data.each do |c|
+      pos = data.pos
+      if pos % 16 == 0
+        dump_pos to, pos
+      end
       to.printf "%02x ", c
     end
+    to.printf "\n"
   end
 end
 
