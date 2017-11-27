@@ -130,10 +130,11 @@ module Ruida
     def relcoord
       r = consume << 8
       r += consume
-      if r > 32767 || r < 0
+      r >>= 1
+      if r > 16383 || r < 0
         error "Not a rel coord"
       end
-      ((r > 16384) ? r-32768 : r) / 1000.0
+      ((r > 8192) ? r-16384 : r) / 1000.0
     end
     # speed in m/s
     def speed
