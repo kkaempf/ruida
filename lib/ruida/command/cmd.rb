@@ -18,12 +18,12 @@ module Ruida
         format = format[sub]
         unless format
           STDERR.printf "Undefined #{self.class.name}:%02x\n", sub
-          return
+          exit 1
         end
       when nil
       else
         STDERR.printf "Unknown format value #{format.inspect}"
-        raise
+        exit 1
       end
       @name = format.shift
       loop do
