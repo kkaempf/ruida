@@ -12,7 +12,8 @@ module Ruida
         cmd.interprete
         cmd
       rescue LoadError
-        puts "Unknown #{hex} @ #{data.pos}"
+        STDERR.printf "*** Unknown #{hex} @ 0x%05x\n" % data.pos
+        exit 1
       end
     end
   end
