@@ -16,7 +16,10 @@ module Ruida
       when Hash
         sub = consume
         format = format[sub]
-        STDERR.printf "#{self.class.name}:%02x ?\n", sub unless format
+        unless format
+          STDERR.printf "Undefined #{self.class.name}:%02x\n", sub
+          return
+        end
       when nil
       else
         STDERR.printf "Unknown format value #{format.inspect}"
@@ -50,6 +53,8 @@ module Ruida
           @args << "#{speed}mm/s"
         when :power
           @args << "#{power}%"
+        when :layer
+          @args << "Layer:#{layer}"
         else
           STDERR.puts "Can't interprete #{f.inspect}"
         end
@@ -108,6 +113,10 @@ module Ruida
     # speed in m/s
     def speed
       number(5).to_f / 1000.0
+    end
+    # layer
+    def layer
+      consume(1)
     end
     # zero terminated string
     def cstring
