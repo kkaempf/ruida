@@ -1,7 +1,7 @@
 module Ruida
   class Cmd_8b < Cmd
     def self.format
-      [ "8b", -2 ]
+      [ "Move_Vert", :rel ]
     end
   end
 end
