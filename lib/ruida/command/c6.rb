@@ -22,10 +22,10 @@ module Ruida
         0x38 => ["C6 38", :layer, :power],
         0x41 => ["Laser_2_Min_Pow_C6_41", :layer, :power],
         0x42 => ["Laser_2_Max_Pow_C6_42", :layer, :power],
-        0x50 => ["C6 50", -2],
-        0x51 => ["C6 51", -2],
-        0x55 => ["C6 55", -2],
-        0x56 => ["C6 56", -2]
+        0x50 => ["C6 50", :power],
+        0x51 => ["C6 51", :power],
+        0x55 => ["C6 55", :power],
+        0x56 => ["C6 56", :power]
     }
     end
   end
