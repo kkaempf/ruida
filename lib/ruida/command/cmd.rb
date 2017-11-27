@@ -55,6 +55,8 @@ module Ruida
           @args << "#{power}%"
         when :layer
           @args << "Layer:#{layer}"
+        when :ms
+          @args << "#{ms} ms"
         else
           STDERR.puts "Can't interprete #{f.inspect}"
         end
@@ -118,6 +120,10 @@ module Ruida
     def layer
       consume(1)
     end
+    # delay in ms
+    def ms
+      number(5).to_f / 1000.0
+    end      
     # zero terminated string
     def cstring
       s = ""
