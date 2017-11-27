@@ -52,11 +52,15 @@ module Ruida
         when :speed
           @args << "#{speed}mm/s"
         when :power
-          @args << "#{power}%"
+          @args << "#{percent}%"
         when :layer
           @args << "Layer:#{layer}"
         when :ms
           @args << "#{ms} ms"
+        when :percent
+          @args << "#{percent}%"
+        when :bool
+          @args << "#{bool}"
         else
           STDERR.puts "Can't interprete #{f.inspect}"
         end
@@ -86,9 +90,23 @@ module Ruida
     def consume n=1
       @data.consume n
     end
-    # power in 0,006103516% (100/2^14)
-    def power
-      (number(2).to_f * (100.0/(2 ** 14))).round
+    def bool
+      case consume
+      when 0
+        "False"
+      when 1
+        "True"
+      else
+        raise "Not a bool"
+      end
+    end
+    # percent in 0,006103516% (100/2^14)
+    def percent
+      p = (number(2).to_f * (100.0/(2 ** 14))).round
+      if p > 100
+        raise "Not percent: #{p}"
+      end
+      p
     end
     # number of n hex values
     def number n
