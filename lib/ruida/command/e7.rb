@@ -16,8 +16,8 @@ module Ruida
         0x51 => ["Bottom_Right_E7_51", :abs, :abs],
         0x52 => ["E7 52", 0x00, :abs, :abs],
         0x53 => ["Point_E7_53", 0x00, :abs, :abs],
-        0x54 => ["E7 54", -1, :abs],
-        0x55 => ["E7 55", -1, :abs],
+        0x54 => ["Pen_Draw_Y", -1, :abs],
+        0x55 => ["Laser2_Y_Offset", :bool, :abs],
         0x60 => ["E7 60", -1],
         0x61 => ["E7 61", 0x00, :abs, :abs],
         0x62 => ["Point_E7_62", 0x00, :abs, :abs]
