@@ -1,7 +1,7 @@
 module Ruida
   class Cmd_ab < Cmd
     def self.format
-      [ "Distort_AB", :percent ]
+      [ "Cut_Vert", :rel ]
     end
   end
 end
