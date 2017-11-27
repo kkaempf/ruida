@@ -1,5 +1,10 @@
 module Ruida
   class Cmd
+    def error msg
+      pos = " @ %05x" % data.pos
+      STDERR.puts msg+pos
+      exit 1
+    end
     # interprete format description
     # [ "Name", <item>, <item>, ... ]
     # <item> : Integer, > 0 - consume constant
@@ -17,13 +22,11 @@ module Ruida
         sub = consume
         format = format[sub]
         unless format
-          STDERR.printf "Undefined #{self.class.name}:%02x\n", sub
-          exit 1
+          error "Undefined #{self.class.name}:%02x" % sub
         end
       when nil
       else
-        STDERR.printf "Unknown format value #{format.inspect}"
-        exit 1
+        error "Unknown format value #{format.inspect}"
       end
       @name = format.shift
       loop do
@@ -38,6 +41,7 @@ module Ruida
             v = consume
             if f >= 0 && v != f
               STDERR.printf "%05x: #{self.class}#{@args.inspect}: expected %02x, got %02x\n", @data.pos, f, v
+              exit 1
             end
             @args << "%02x" % v
           else
@@ -62,7 +66,7 @@ module Ruida
         when :bool
           @args << "#{bool}"
         else
-          STDERR.puts "Can't interprete #{f.inspect}"
+          error "Can't interprete #{f.inspect}"
         end
       end
       @length = @data.pos - @pos
@@ -104,7 +108,7 @@ module Ruida
     def percent
       p = (number(2).to_f * (100.0/(2 ** 14))).round
       if p > 100
-        raise "Not percent: #{p}"
+        error "Not percent: #{p}"
       end
       p
     end
@@ -124,11 +128,12 @@ module Ruida
     end
     # relative position in µm; signed (2s complement)
     def relcoord
-#      r = number(2)
       r = consume << 8
       r += consume
-      ((r > 32767) ? r-65536 : r) / 1000.0
-#      r += consume
+      if r > 32767 || r < 0
+        error "Not a rel coord"
+      end
+      ((r > 16384) ? r-32768 : r) / 1000.0
     end
     # speed in m/s
     def speed
