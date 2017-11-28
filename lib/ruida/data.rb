@@ -76,5 +76,9 @@ module Ruida
       @pos += n
       (n == 1) ? v[0] : v
     end
+    # peek one byte without incrementing @pos
+    def peek
+      @data[@pos]
+    end
   end
 end

@@ -98,6 +98,9 @@ module Ruida
     def consume n=1
       @data.consume n
     end
+    def peek
+      @data.peek
+    end
     def bool
       case consume
       when 0
@@ -120,7 +123,9 @@ module Ruida
     def number n
       fak = 1
       res = 0
+      xor = peek # Ruida, go home, you're drunk
       consume(n).reverse.each do |b|
+        b ^= xor
         res += fak * b
         fak *= 0x80
       end
