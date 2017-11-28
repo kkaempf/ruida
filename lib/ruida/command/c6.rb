@@ -7,7 +7,7 @@ module Ruida
         0x06 => ["Laser_3_Max_Pow_C6_06", :power],
         0x07 => ["Laser_4_Min_Pow_C6_07", :power],
         0x08 => ["Laser_4_Max_Pow_C6_08", :power],
-        0x10 => ["C6 10", :abs],
+        0x10 => ["Dot time", :sec],
         0x12 => ["Cut_Open_delay_12", :ms],
         0x13 => ["Cut_Close_delay_13", :ms],
         0x15 => ["Cut_Open_delay_15", :ms],
