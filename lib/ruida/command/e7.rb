@@ -14,13 +14,13 @@ module Ruida
         0x24 => ["E7 24", -1],
         0x50 => ["Top_Left_E7_50", :abs, :abs],
         0x51 => ["Bottom_Right_E7_51", :abs, :abs],
-        0x52 => ["E7 52", 0x00, :abs, :abs],
-        0x53 => ["Bottom_Right_E7_53", 0x00, :abs, :abs],
+        0x52 => ["E7 52", :layer, :abs, :abs],
+        0x53 => ["Bottom_Right_E7_53", :layer, :abs, :abs],
         0x54 => ["Pen_Draw_Y", -1, :abs],
         0x55 => ["Laser2_Y_Offset", :bool, :abs],
         0x60 => ["E7 60", -1],
-        0x61 => ["E7 61", 0x00, :abs, :abs],
-        0x62 => ["Bottom_Right_E7_62", 0x00, :abs, :abs]
+        0x61 => ["E7 61", :layer, :abs, :abs],
+        0x62 => ["Bottom_Right_E7_62", :layer, :abs, :abs]
       }
     end
   end
