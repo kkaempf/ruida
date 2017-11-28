@@ -63,6 +63,8 @@ module Ruida
           @args << "Layer:#{layer}"
         when :ms
           @args << "#{ms} ms"
+        when :sec
+          @args << "#{sec} s"
         when :percent
           @args << "#{percent}%"
         when :bool
@@ -150,6 +152,10 @@ module Ruida
     def ms
       number(5).to_f / 1000.0
     end      
+    # dot time in s
+    def sec
+      number(5).to_f / 1000.0 / 1000.0
+    end
     # zero terminated string
     def cstring
       s = ""
