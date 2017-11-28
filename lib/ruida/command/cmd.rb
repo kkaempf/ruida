@@ -13,6 +13,7 @@ module Ruida
     #
     def interprete
       format = self.class.format
+      sub = nil
 #      puts "format #{format.class}:#{format.inspect}"
       case format
       when Array
@@ -40,7 +41,8 @@ module Ruida
           if f >= -1
             v = consume
             if f >= 0 && v != f
-              STDERR.printf "%05x: #{self.class}#{@args.inspect}: expected %02x, got %02x\n", @data.pos, f, v
+              subhex = (sub.nil?) ? "" : ("%02x"%sub)
+              STDERR.printf "%05x: #{self.class}#{subhex}#{@args.inspect}: expected %02x, got %02x\n", @data.pos, f, v
               exit 1
             end
             @args << "%02x" % v
