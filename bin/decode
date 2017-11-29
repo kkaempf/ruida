@@ -26,11 +26,36 @@ class Decoder
     @file.binmode
   end
   
-  def dump to=STDOUT
+  def dump single_step_to=nil, generate_lookup=nil
     rd = Ruida::Data.new @file.read
+    if generate_lookup
+      rd.lookuptable
+      exit 1
+    end
+    wr = nil
+    if single_step_to
+      wr = File.open single_step_to, 'wb'
+      if wr
+        wr.write rd.raw(0,3)
+      else
+        STDERR.puts "Can't open #{single_step_to}"
+        exit 1
+      end
+    end
     parser = Ruida::Parser.new rd
     parser.each do |c|
-      to.puts c
+      STDOUT.puts c
+      if wr
+        STDOUT.flush
+        STDOUT.print("Step [%04x:#{c.length}]?" % c.pos)
+        STDIN.gets
+        wr.print c.raw
+        wr.flush
+#        c.raw.split("").each do |x|
+#          STDOUT.print "%02x"%x.ord
+#        end
+#        STDOUT.puts
+      end
     end
   end
 end
@@ -39,8 +64,22 @@ if ARGV.size == 0
   dis = Decoder.new
   dis.dump
 else
-  ARGV.each do |path|
+  single_step_to = nil
+  generate_lookup = nil
+  loop do
+    break if ARGV.empty?
+    path = ARGV.shift
+    if path == "-s" # single step
+      single_step_to = ARGV.shift
+      puts "Single step, output to #{single_step_to}"
+      next
+    end
+    if path == "-l"
+      generate_lookup = true
+      next
+    end
     dis = Decoder.new path
-    dis.dump
+    dis.dump single_step_to, generate_lookup
+    break if generate_lookup
   end
 end
