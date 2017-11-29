@@ -1,5 +1,6 @@
 module Ruida
   class Cmd
+    attr_reader :pos, :length
     def error msg
       pos = " @ %05x" % data.pos
       STDERR.puts msg+pos
@@ -100,6 +101,9 @@ module Ruida
     end
     def peek
       @data.peek
+    end
+    def raw
+      @data.raw(@pos, @length)
     end
     def bool
       case consume
