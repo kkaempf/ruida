@@ -14,10 +14,10 @@ module Ruida
       res_b
     end
     # check initial bytes of RD file
-    def recognize raw
-      checksum = raw[0,1].ord << 8
-      checksum += raw[1,1].ord
-      @filetype = raw[2,1].ord
+    def recognize
+      checksum = @raw[0,1].ord << 8
+      checksum += @raw[1,1].ord
+      @filetype = @raw[2,1].ord
       # D2 9B FA
       @@magic = case @filetype
     when 0xfa # Model 320, 633x, 644xg, 644xs, 654xs
@@ -31,11 +31,12 @@ module Ruida
     end
     public
     attr_reader :pos
-    def initialize raw
-      checksum = recognize raw
+    def initialize buffer
+      @raw = buffer
+      checksum = recognize
       sum = 0
       # split buffer to array of numbers
-      @data = raw[3..-1].split("").map do |c|
+      @data = @raw.split("").map do |c|
         v = c.ord
         sum += v
         unscramble(v)
@@ -43,6 +44,14 @@ module Ruida
       printf "File checksum %04x, computed %04x\n", checksum, sum
       rewind
       @size = @data.size
+    end
+    def lookuptable
+      (0..255).each do |c|
+        printf "%02x -> %02x\n", c, unscramble(c)
+      end
+    end
+    def raw_checksum
+      @raw[0,2]
     end
     def to_s
       "RD #{@size} bytes"
@@ -79,6 +88,9 @@ module Ruida
     # peek one byte without incrementing @pos
     def peek
       @data[@pos]
+    end
+    def raw start, len
+      @raw[start,len]
     end
   end
 end
