@@ -2,7 +2,7 @@ module Ruida
   class Cmd
     attr_reader :pos, :length
     def error msg
-      pos = " @ %05x" % data.pos
+      pos = " @ %05x" % @data.pos
       STDERR.puts msg+pos
       exit 1
     end
@@ -70,6 +70,10 @@ module Ruida
           @args << "#{percent}%"
         when :bool
           @args << "#{bool}"
+        when :freq
+          @args << "#{freq}kHz"
+        when :laser
+          @args << "Laser#{consume+1}"
         else
           error "Can't interprete #{f.inspect}"
         end
@@ -164,6 +168,10 @@ module Ruida
     # dot time in s
     def sec
       number(5).to_f / 1000.0 / 1000.0
+    end
+    # Laser frequency
+    def freq
+      number(5).to_f / 1000.0
     end
     # zero terminated string
     def cstring

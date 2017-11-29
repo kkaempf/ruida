@@ -25,7 +25,8 @@ module Ruida
         0x50 => ["Cut_through_power1", :power],
         0x51 => ["Cut_through_power2", :power],
         0x55 => ["Cut_through_power3", :power],
-        0x56 => ["Cut_through_power4", :power]
+        0x56 => ["Cut_through_power4", :power],
+        0x60 => ["Laser_Freq", :laser, 0x00, :freq ]
     }
     end
   end
