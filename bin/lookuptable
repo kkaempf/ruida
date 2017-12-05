@@ -1,0 +1,73 @@
+#!/usr/bin/ruby
+#
+# lookuptable.rb
+#
+# Generate lookuptable for RD scrambling/unscrambling
+#
+# Usage:
+#   lookuptable.rb [--ruby][--markdown] <magic> # Generate lookuptable
+#   magic is a 2-digit hex value
+#   defaults to --markdown and magic 88 (Model 320, 633x, 644xg, 644xs, 654xs)
+#   use magic 61 for Model 634xg
+
+
+$:.push(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'ruida'
+require 'scanf'
+
+as_ruby = false
+as_markdown = true # markdown is default
+magic = nil
+
+loop do
+  break if ARGV.empty?
+  arg = ARGV.shift
+  case arg
+  when "--ruby"
+    as_ruby = true
+    as_markdown = false
+    next
+  when "--markdown"
+    as_ruby = false
+    as_markdown = true
+    next
+  else
+    magic = arg.scanf("%02x").shift
+    STDERR.puts "Using magic 0x%02x" % magic
+  end
+  rd = Ruida::Data.new magic
+  lookuptable = rd.lookuptable
+  if as_ruby
+    print "{ "
+    lookuptable.each do |k,v|
+      printf "0x%02x=>0x%02x, ", k, v
+    end
+    puts "}"
+  end
+  if as_markdown
+    # header
+    print "|    "
+    for col in (0..15) do
+      printf "|  %1x  ", col
+    end
+    puts "|"
+    print "|    "
+    for col in (0..15) do
+      print "|:---:"
+    end
+    puts "|"    
+    for row in (0..15) do
+      for col in (0..15) do
+        if col == 0
+          printf "| %1x  ", row
+        end
+        printf "| %02x  ", lookuptable[(row<<4) + col]
+      end
+      puts "|"
+    end
+  end
+end
+
+unless magic
+  STDERR.puts "Usage: lookuptable [--ruby][--markdown] <magic>"
+end

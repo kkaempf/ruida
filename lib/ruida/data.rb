@@ -5,7 +5,7 @@ module Ruida
     def unscramble b
       #    printf "unscramble %02x magic %02x\n", b, @@magic
       res_b = (b == 0) ? 0xff : b-1
-      res_b ^= @@magic
+      res_b ^= @magic
       fb = res_b & 0x80
       lb = res_b & 1
       res_b = res_b - fb - lb
@@ -19,8 +19,8 @@ module Ruida
       checksum += @raw[1,1].ord
       @filetype = @raw[2,1].ord
       # D2 9B FA
-      @@magic = case @filetype
-    when 0xfa # Model 320, 633x, 644xg, 644xs, 654xs
+      @magic = case @filetype
+      when 0xfa # Model 320, 633x, 644xg, 644xs, 654xs
         0x88
       when 0x61 # Model 634xg
         0x11
@@ -31,25 +31,36 @@ module Ruida
     end
     public
     attr_reader :pos
-    def initialize buffer
-      @raw = buffer
-      checksum = recognize
-      sum = 0
-      # split buffer to array of numbers
-      @data = @raw.split("").map do |c|
-        v = c.ord
-        sum += v
-        unscramble(v)
+    def initialize arg
+      case arg
+      when Integer
+        @magic = arg
+      when NilClass
+        STDERR.puts "Nil arg in call to Data.new"
+      else
+        @raw = arg
+        checksum = recognize
+        sum = 0
+        # split buffer to array of numbers
+        @data = @raw.split("").map do |c|
+          v = c.ord
+          sum += v
+          unscramble(v)
+        end
+        printf "File checksum %04x, computed %04x\n", checksum, sum
+        rewind
+        @size = @data.size
       end
-      printf "File checksum %04x, computed %04x\n", checksum, sum
-      rewind
-      @size = @data.size
     end
+    # return hash with lookuptable
     def lookuptable
+      res = Hash.new
       (0..255).each do |c|
-        printf "%02x -> %02x\n", c, unscramble(c)
+        res[c] = unscramble(c)
       end
+      res
     end
+    # raw (scrambled) checksum
     def raw_checksum
       @raw[0,2]
     end

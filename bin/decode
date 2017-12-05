@@ -26,12 +26,8 @@ class Decoder
     @file.binmode
   end
   
-  def dump single_step_to=nil, generate_lookup=nil
+  def dump single_step_to=nil
     rd = Ruida::Data.new @file.read
-    if generate_lookup
-      rd.lookuptable
-      exit 1
-    end
     wr = nil
     if single_step_to
       wr = File.open single_step_to, 'wb'
@@ -65,7 +61,6 @@ if ARGV.size == 0
   dis.dump
 else
   single_step_to = nil
-  generate_lookup = nil
   loop do
     break if ARGV.empty?
     path = ARGV.shift
@@ -74,12 +69,7 @@ else
       puts "Single step, output to #{single_step_to}"
       next
     end
-    if path == "-l"
-      generate_lookup = true
-      next
-    end
     dis = Decoder.new path
-    dis.dump single_step_to, generate_lookup
-    break if generate_lookup
+    dis.dump single_step_to
   end
 end
