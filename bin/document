@@ -1,0 +1,52 @@
+#!/usr/bin/ruby
+#
+# document
+#
+# Generate (markdown) documentation for all commands
+#
+
+$:.push(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'ruida'
+
+def interprete cmds, format
+  print "| "
+  cmds.each do |c|
+    print "%02x " % c
+  end
+  text = format.shift
+  format.each do |f|
+    case f
+    when Integer
+      if f < 0
+        print "XX "
+      else
+        print "%02x " % f
+      end
+    else
+      print "<#{f}> "
+    end
+  end
+  puts "| #{text} | "
+end
+
+for c in (0..255) do
+  hex = "%02x" % c
+  begin
+    klass = Ruida::Command.klass_for hex
+#    puts "cmd #{hex}: #{klass}"
+  rescue LoadError
+    # command does not exist
+    next
+  end
+  format = klass.format
+  case format
+  when Array
+    interprete [c], format
+  when Hash
+    format.each do |k,v|
+      interprete [c,k], v
+    end
+  else
+    STDERR.puts "Unknown format spec #{format.inspect} for #{klass}"
+  end
+end
