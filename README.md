@@ -3,8 +3,8 @@ Decoder and tooling for the RDWorks `.rd` file format
 
 ## About
 
-(Thunderlaser)[http://www.thunderlaser.com] laser cutter need a proprietary Windows
-software ((RDWorks)[http://rdworks.software.informer.com/8.0]) to
+[Thunderlaser](http://www.thunderlaser.com) laser cutter need a proprietary Windows
+software ([RDWorks](http://rdworks.software.informer.com/8.0)) to
 operate.
 
 RDWorks generates `.rd` files to communicate with the laser cutter.
@@ -39,6 +39,5 @@ format) the scrambled values.
 
 ### document
 
-Generates a
-(markdown)[https://daringfireball.net/projects/markdown/syntax] table,
+Generates a [github flavored](https://github.github.com/gfm) [markdown](https://daringfireball.net/projects/markdown/syntax) table,
 listing all commands known to `decode`
