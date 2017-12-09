@@ -74,6 +74,8 @@ module Ruida
           @args << "#{freq}kHz"
         when :laser
           @args << "Laser#{consume+1}"
+        when :meter
+          @args << "#{abscoord*1000}mm"
         else
           error "Can't interprete #{f.inspect}"
         end
