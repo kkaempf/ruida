@@ -15,19 +15,16 @@ module Ruida
     end
     # check initial bytes of RD file
     def recognize
-      checksum = @raw[0,1].ord << 8
-      checksum += @raw[1,1].ord
-      @filetype = @raw[2,1].ord
-      # D2 9B FA
-      @magic = case @filetype
-      when 0xfa # Model 320, 633x, 644xg, 644xs, 654xs
+      @filetype = @raw[0,3].split("").map { |c| c.ord }
+      @magic = case @filetype[2]
+      when 0xfa # Model 320, 633x, 644xg, 644xs, 654xs: D2 9B FA
         0x88
-      when 0x61 # Model 634xg
+      when 0x61 # Model 634xg: 49 04 61
         0x11
       else
-        raise "Not a RD file: expecting 0xfa, got 0x%02x" % @filetype
+        STDERR.puts "*** Unknown model: %02x %02x %02x" % [@filetype[0],@filetype[1],@filetype[2]]
+        nil
       end
-      checksum
     end
     public
     attr_reader :pos
@@ -39,7 +36,7 @@ module Ruida
         STDERR.puts "Nil arg in call to Data.new"
       else
         @raw = arg
-        checksum = recognize
+        raise unless recognize
         sum = 0
         # split buffer to array of numbers
         @data = @raw.split("").map do |c|
@@ -47,7 +44,6 @@ module Ruida
           sum += v
           unscramble(v)
         end
-        printf "File checksum %04x, computed %04x\n", checksum, sum
         rewind
         @size = @data.size
       end
@@ -59,10 +55,6 @@ module Ruida
         res[c] = unscramble(c)
       end
       res
-    end
-    # raw (scrambled) checksum
-    def raw_checksum
-      @raw[0,2]
     end
     def to_s
       "RD #{@size} bytes"
