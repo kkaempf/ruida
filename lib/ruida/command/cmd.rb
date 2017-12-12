@@ -133,7 +133,11 @@ module Ruida
     def number n
       fak = 1
       res = 0
-      xor = peek # Ruida, go home, you're drunk
+      if n > 2
+        xor = peek # Ruida, go home, you're drunk
+      else
+        xor = 0
+      end
       consume(n).reverse.each do |b|
         b ^= xor
         res += fak * b
@@ -147,13 +151,7 @@ module Ruida
     end
     # relative position in µm; signed (2s complement)
     def relcoord
-      r = consume << 8
-      r += consume
-      r >>= 1
-      if r > 16383 || r < 0
-        error "Not a rel coord"
-      end
-      ((r > 8192) ? r-16384 : r) / 1000.0
+      number(2).to_f / 1000.0
     end
     # speed in m/s
     def speed
