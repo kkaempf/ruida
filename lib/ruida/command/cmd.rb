@@ -141,6 +141,7 @@ module Ruida
       consume(n).reverse.each do |b|
         b ^= xor
         res += fak * b
+#        printf "fak %02x b %02x res %f\n", fak, b, res if n == 2
         fak *= 0x80
       end
       res
@@ -151,7 +152,11 @@ module Ruida
     end
     # relative position in µm; signed (2s complement)
     def relcoord
-      number(2).to_f / 1000.0
+      res = number(2)
+      if res > 8191
+        res = res-16384
+      end
+      res.to_f / 1000.0
     end
     # speed in m/s
     def speed
