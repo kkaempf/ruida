@@ -76,6 +76,8 @@ module Ruida
           @args << "Laser#{consume+1}"
         when :meter
           @args << "#{abscoord*1000}mm"
+        when :color
+          @args << "#{color}"
         else
           error "Can't interprete #{f.inspect}"
         end
@@ -186,6 +188,14 @@ module Ruida
         break if v == 0
         s += v.chr
       end
+    end
+    # color, BGR, each value 8bits, distributed over 7-bit value
+    def color
+      rgb = consume(4).reverse
+      red = rgb[0] + (rgb[1] & 0x01) << 7 # red overflows by 1 bit
+      green = (rgb[1] & 0x7e) >> 1 + (rgb[2] & 0x03) << 6 # green by 2 bits
+      blue = (rgb[2] & 0x7c) >> 2 + (rgb[3] & 0x07) << 5 # blue by 3 bits
+      "Red %02x, Green %02x, Blue %02x" % [red, green, blue]
     end
   end
 end
