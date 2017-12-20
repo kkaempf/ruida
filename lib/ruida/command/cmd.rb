@@ -188,12 +188,18 @@ module Ruida
       end
     end
     # color, BGR, each value 8bits, distributed over 7-bit value
+    def normalize_color c
+      c / 0xff * 100
+    end
     def color
       rgb = consume(4).reverse
-      red = rgb[0] + (rgb[1] & 0x01) << 7 # red overflows by 1 bit
-      green = (rgb[1] & 0x7e) >> 1 + (rgb[2] & 0x03) << 6 # green by 2 bits
-      blue = (rgb[2] & 0x7c) >> 2 + (rgb[3] & 0x07) << 5 # blue by 3 bits
-      "Red %02x, Green %02x, Blue %02x" % [red, green, blue]
+      red = rgb[0] + ((rgb[1] & 0x01) << 7) # red overflows by 1 bit
+#      STDERR.printf "Red %02x%02x -> %04x\n", rgb[1], rgb[0], red
+      green = ((rgb[1] & 0x7e) >> 1) + ((rgb[2] & 0x03) << 6) # green by 2 bits
+#      STDERR.printf "Green %02x%02x -> %04x\n", rgb[2], rgb[1], green
+      blue = ((rgb[2] & 0x7c) >> 2) + ((rgb[3] & 0x07) << 5) # blue by 3 bits
+#      STDERR.printf "Blue %02x%02x -> %04x\n", rgb[3], rgb[2], blue
+      "R %d%%, G %d%%, B %d%%" % [normalize_color(red), normalize_color(green), normalize_color(blue)]
     end
   end
 end
