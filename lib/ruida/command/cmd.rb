@@ -137,11 +137,7 @@ module Ruida
     def number n
       fak = 1
       res = 0
-      if n > 2
-        xor = peek # Ruida, go home, you're drunk
-      else
-        xor = 0
-      end
+      xor = (n > 2) ? peek : 0
       consume(n).reverse.each do |b|
         b ^= xor
         res += fak * b
