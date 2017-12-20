@@ -78,6 +78,8 @@ module Ruida
           @args << "#{abscoord*1000}mm"
         when :color
           @args << "#{color}"
+        when :priority
+          @args << "Prio #{consume}"
         else
           error "Can't interprete #{f.inspect}"
         end
