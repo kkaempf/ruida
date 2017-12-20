@@ -4,7 +4,7 @@ module Ruida
       { 0x00 => ["E7 00"],
         0x03 => ["Top_Left_E7_07", :abs, :abs],
         0x04 => ["E7 04", -9, :abs],
-        0x05 => ["Speed_E7_05", -4, :speed],
+        0x05 => ["E7_05", -1],
         0x06 => ["Feeding", :abs, :abs], # Feeding1, Distance+Feeding2
         0x07 => ["Bottom_Right_E7_07", :abs, :abs],
         0x08 => ["Bottom_Right_E7_08", -4, :abs, :abs],

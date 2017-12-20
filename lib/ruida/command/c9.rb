@@ -3,7 +3,7 @@ module Ruida
     def self.format
       {
 	0x02 => ["Speed_C9", :speed ],
-        0x04 => ["Layer", :layer, -5 ]
+        0x04 => ["Layer_speed", :layer, :speed ]
       }
     end
   end
