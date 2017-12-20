@@ -6,7 +6,7 @@ module Ruida
       klass = Ruida::const_get "Cmd_"+hex
     end
     def self.consume data
-      cmd = data.consume
+      cmd = data.command
       return nil unless cmd
       hex = sprintf "%02x", cmd
       begin

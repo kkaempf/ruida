@@ -79,14 +79,35 @@ module Ruida
     end
     # consume n bytes from data
     # returns Integer if n = 1
+    # as_command: true:  assume byte is command - has high bit set
+    #             false: assume bytes are data - have high bit clear
     # else returns Array
-    def consume n=1
+    def consume n=1, as_command=false
       if @pos + n > @size
         return nil
       end
+      if as_command
+        # command - high bit must be set
+        v = @data[@pos]
+        @pos += 1
+        if v < 128
+          raise "Command 0x%02x" % v
+        end
+        return v
+      end
       v = @data[@pos, n]
       @pos += n
+      # assume data - high bit must be clear
+      v.each do |vv|
+        if vv > 127
+          STDERR.puts "*** Data 0x%02x" % vv
+        end
+      end
       (n == 1) ? v[0] : v
+    end
+    # consume 1 byte as command
+    def command
+      consume 1, true
     end
     # peek one byte without incrementing @pos
     def peek
