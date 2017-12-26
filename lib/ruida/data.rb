@@ -107,7 +107,6 @@ module Ruida
       else
         raise "Unknown consume mode #{as.inspect}"
       end
-      STDERR.puts "consume(#{@pos-n}:#{n},#{as.inspect}) => #{v.inspect}:#{v.class}"
       (n == 1) ? v[0] : v
     end
     # consume 1 byte as command
