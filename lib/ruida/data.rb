@@ -66,7 +66,7 @@ module Ruida
     # Enumerator
     def each(&block)
       loop do
-        v = consume
+        v = consume 1, :any
         break unless v
         block.call v
       end
@@ -82,32 +82,41 @@ module Ruida
     # as_command: true:  assume byte is command - has high bit set
     #             false: assume bytes are data - have high bit clear
     # else returns Array
-    def consume n=1, as_command=false
+    def consume n=1, as=:data
       if @pos + n > @size
         return nil
       end
-      if as_command
-        # command - high bit must be set
-        v = @data[@pos]
-        @pos += 1
-        if v < 128
-          raise "Command 0x%02x" % v
-        end
-        return v
-      end
       v = @data[@pos, n]
       @pos += n
-      # assume data - high bit must be clear
-      v.each do |vv|
-        if vv > 127
-          STDERR.puts "*** Data 0x%02x" % vv
+      case as
+      when :data
+        # assume data - high bit must be clear
+        v.each do |vv|
+          if vv > 127
+            STDERR.puts "*** Data 0x%02x" % vv
+          end
         end
+      when :command
+        # command - high bit must be set
+        c = v[0]
+        if c < 128
+          raise "Command 0x%02x" % c
+        end
+        n = 1
+      when :any
+      else
+        raise "Unknown consume mode #{as.inspect}"
       end
+      STDERR.puts "consume(#{@pos-n}:#{n},#{as.inspect}) => #{v.inspect}:#{v.class}"
       (n == 1) ? v[0] : v
     end
     # consume 1 byte as command
     def command
-      consume 1, true
+      consume 1, :command
+    end
+    # consume n bytes as values
+    def values n=1
+      consume n, :data
     end
     # peek one byte without incrementing @pos
     def peek
