@@ -14,7 +14,7 @@
 $:.push(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'ruida'
 require 'scanf'
-
+as_reverse = false
 as_ruby = false
 as_markdown = true # markdown is default
 magic = nil
@@ -23,6 +23,9 @@ loop do
   break if ARGV.empty?
   arg = ARGV.shift
   case arg
+  when "--reverse"
+    as_reverse = true
+    next
   when "--ruby"
     as_ruby = true
     as_markdown = false
@@ -39,6 +42,13 @@ loop do
   lookuptable = rd.lookuptable
   if as_ruby
     print "{ "
+    if as_reverse
+      reversetable = {}
+      lookuptable.each do |k,v|
+        reversetable[v] = k
+      end
+      lookuptable = reversetable
+    end
     lookuptable.each do |k,v|
       printf "0x%02x=>0x%02x, ", k, v
     end
