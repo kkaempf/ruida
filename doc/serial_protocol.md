@@ -6,7 +6,7 @@ See 'Debug setup' below for the full stack.
 
 ## Serial settings
 
-8N0, 19200 Baud
+8N1, 38400 Baud
 
 ## Control lines
 
