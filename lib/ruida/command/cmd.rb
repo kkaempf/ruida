@@ -193,10 +193,10 @@ module Ruida
     end
     # color, BGR, each value 8bits, distributed over 7-bit value
     def color
-      rgb = number(5)
-      red = rgb & 0xff;
-      green = (rgb >> 8) & 0xff;
-      blue = (rgb >> 16) & 0xff;
+      rgb = consume(5).reverse
+      red = rgb[0] + ((rgb[1] & 0x01) << 7) # red overflows by 1 bit
+      green = ((rgb[1] & 0x7e) >> 1) + ((rgb[2] & 0x03) << 6) # green by 2 bits
+      blue = ((rgb[2] & 0x7c) >> 2) + ((rgb[3] & 0x07) << 5) # blue by 3 bits
       "R %d%%, G %d%%, B %d%%" % [normalize_color(red), normalize_color(green), normalize_color(blue)]
     end
   end
