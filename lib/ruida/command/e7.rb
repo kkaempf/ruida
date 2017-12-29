@@ -2,6 +2,7 @@ module Ruida
   class Cmd_e7 < Cmd
     def self.format
       { 0x00 => ["Stop"],
+        0x01 => ["SetFilename", :string],
         0x03 => ["Top_Left_E7_07", :abs, :abs],
         0x04 => ["E7 04", -4, :abs, :abs],
         0x05 => ["E7_05", -1],
