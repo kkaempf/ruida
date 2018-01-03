@@ -80,6 +80,8 @@ module Ruida
           @args << "#{color}"
         when :priority
           @args << "Prio #{consume}"
+        when :string
+          @args << " #{cstring.inspect}"
         else
           error "Can't interprete #{f.inspect}"
         end
@@ -186,6 +188,7 @@ module Ruida
         break if v == 0
         s += v.chr
       end
+      s
     end
     # 0..255 -> 0..100
     def normalize_color c
