@@ -40,15 +40,15 @@ loop do
   end
   rd = Ruida::Data.new magic
   lookuptable = rd.lookuptable
+  if as_reverse
+    reversetable = {}
+    lookuptable.each do |k,v|
+      reversetable[v] = k
+    end
+    lookuptable = reversetable
+  end
   if as_ruby
     print "{ "
-    if as_reverse
-      reversetable = {}
-      lookuptable.each do |k,v|
-        reversetable[v] = k
-      end
-      lookuptable = reversetable
-    end
     lookuptable.each do |k,v|
       printf "0x%02x=>0x%02x, ", k, v
     end
@@ -56,25 +56,22 @@ loop do
   end
   if as_markdown
     # header
-    print "|    "
+    puts "<table>\n<tr><th></th>"
     for col in (0..15) do
-      printf "|  %1x  ", col
+      printf "<th>%1x</th>", col
     end
-    puts "|"
-    print "|    "
-    for col in (0..15) do
-      print "|:---:"
-    end
-    puts "|"    
+    puts "</tr>"
     for row in (0..15) do
+      print "<tr>"
       for col in (0..15) do
         if col == 0
-          printf "| %1x  ", row
+          printf "<td>%1x</td>", row
         end
-        printf "| %02x  ", lookuptable[(row<<4) + col]
+        printf "<td>%02x</td>", lookuptable[(row<<4) + col]
       end
-      puts "|"
+      puts "</tr>"
     end
+    puts "</table>"
   end
 end
 

@@ -1,4 +1,4 @@
-# Lookup DECODE table for magic 0x88
+# Lookup tables for magic 0x88
 
 Magic 0x88 is used by Model 320, 633x, 644xg, 644xs, 654xs
 

@@ -7,12 +7,14 @@
 
 $:.push(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'ruida'
+require 'cgi'
 
 def interprete cmds, format
-  print "| "
+  print "<tr><td>"
   cmds.each do |c|
     print "%02x " % c
   end
+  print "</td><td>"
   text = format.shift
   format.each do |f|
     case f
@@ -23,12 +25,16 @@ def interprete cmds, format
         print "%02x " % f
       end
     else
-      print "<#{f}> "
+      s = CGI.escapeHTML("#{f}")
+      print "&lt;<a href='##{f}'>#{s}</a>&gt;"
     end
   end
-  puts "| #{text} | "
+  print "</td>"
+  puts "<td>#{CGI.escapeHTML(text)}</td></tr>"
 end
 
+puts "<table>"
+puts "<tr><th>Command</th><th>Parameters</th><th>Meaning</th></tr>"
 for c in (0..255) do
   hex = "%02x" % c
   begin
@@ -50,3 +56,4 @@ for c in (0..255) do
     STDERR.puts "Unknown format spec #{format.inspect} for #{klass}"
   end
 end
+puts "</table>"
