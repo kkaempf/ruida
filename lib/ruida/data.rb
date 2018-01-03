@@ -28,15 +28,22 @@ module Ruida
     end
     public
     attr_reader :pos
-    def initialize arg
+    def initialize arg, magic = nil
+      @magic = magic
       case arg
-      when Integer
+      when Integer # for lookuptable generation
         @magic = arg
       when NilClass
         STDERR.puts "Nil arg in call to Data.new"
       else
         @raw = arg
-        raise unless recognize
+        if @magic
+          @startpos = 0
+        else
+          @startpos = 3
+          # recognize only if magic not known
+          raise unless recognize
+        end
         sum = 0
         # split buffer to array of numbers
         @data = @raw.split("").map do |c|
@@ -74,7 +81,7 @@ module Ruida
     end
     # rewind to after header
     def rewind
-      @pos = 3
+      @pos = @startpos
       @eof = false
     end
     # consume n bytes from data

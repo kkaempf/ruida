@@ -13,7 +13,8 @@ $:.push(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'ruida'
 
 class Dump
-  def initialize path=nil
+  def initialize path=nil, magic=nil
+    @magic = magic
     if path
       raise "Empty path" if path.empty?
       @path = path
@@ -29,7 +30,7 @@ class Dump
     to.printf "\n%05x: ", pos
   end
   def dump to=STDOUT
-    data = Ruida::Data.new @file.read
+    data = Ruida::Data.new @file.read, @magic
     dump_pos to, data.pos
     data.each do |c|
       pos = data.pos
@@ -42,12 +43,18 @@ class Dump
   end
 end
 
+magic = nil
+
 if ARGV.size == 0
   dis = Dump.new
   dis.dump
 else
   ARGV.each do |path|
-    dis = Dump.new path
+    if path == "-88"
+      magic = 0x88
+      next
+    end
+    dis = Dump.new path, magic
     dis.dump
   end
 end

@@ -13,7 +13,8 @@ $:.push(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'ruida'
 
 class Decoder
-  def initialize path=nil
+  def initialize path=nil, magic=nil
+    @magic = magic
     if path
       raise "Empty path" if path.empty?
       @path = path
@@ -27,7 +28,7 @@ class Decoder
   end
   
   def dump single_step_to=nil
-    rd = Ruida::Data.new @file.read
+    rd = Ruida::Data.new @file.read, @magic
     wr = nil
     if single_step_to
       wr = File.open single_step_to, 'wb'
@@ -56,8 +57,15 @@ class Decoder
   end
 end
 
+arg = ARGV.shift
+magic = nil
+if arg == "-88"
+  magic = 0x88
+else
+  ARGV.unshift arg
+end
 if ARGV.size == 0
-  dis = Decoder.new
+  dis = Decoder.new nil, magic
   dis.dump
 else
   single_step_to = nil
@@ -69,7 +77,7 @@ else
       puts "Single step, output to #{single_step_to}"
       next
     end
-    dis = Decoder.new path
+    dis = Decoder.new path, magic
     dis.dump single_step_to
   end
 end
