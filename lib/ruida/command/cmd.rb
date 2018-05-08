@@ -53,7 +53,7 @@ module Ruida
             end
           end
         when :abs
-          @args << "#{abscoord}mm"
+          @args << "#{abscoord.round(3)}mm"
         when :rel
           @args << "#{relcoord}mm"
         when :speed
@@ -75,7 +75,7 @@ module Ruida
         when :laser
           @args << "Laser#{consume+1}"
         when :meter
-          @args << "#{abscoord*1000}mm"
+          @args << "#{(abscoord*1000).round(3)}mm"
         when :color
           @args << "#{color}"
         when :priority
