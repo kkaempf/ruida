@@ -16,6 +16,7 @@ require 'ruida'
 require 'scanf'
 as_reverse = false
 as_ruby = false
+as_java = false
 as_markdown = true # markdown is default
 magic = nil
 
@@ -28,6 +29,10 @@ loop do
     next
   when "--ruby"
     as_ruby = true
+    as_markdown = false
+    next
+  when "--java"
+    as_java = true
     as_markdown = false
     next
   when "--markdown"
@@ -53,6 +58,18 @@ loop do
       printf "0x%02x=>0x%02x, ", k, v
     end
     puts "}"
+  end
+  if as_java
+    print "byte[] "
+    print (as_reverse) ? "encode_table" : "decode_table"
+    print " = {"
+    (0..255).each do |k|
+      puts if k % 16 == 0
+      v = lookuptable[k]
+      print "(byte)" if v > 127
+      printf "0x%02x, ", v
+    end
+    puts "};"
   end
   if as_markdown
     # header
