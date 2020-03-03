@@ -99,7 +99,7 @@ module Ruida
       @args.each do |a|
         s << " #{a}"
       end
-      (6-(s.size / 8)).times do
+      (7-(s.size / 8)).times do
         s << "\t"
       end
       for i in @pos...@pos+@length do
