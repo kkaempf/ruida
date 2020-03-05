@@ -23,6 +23,7 @@ module Ruida
         0x11
       else
         STDERR.puts "*** Unknown model: %02x %02x %02x" % [@filetype[0],@filetype[1],@filetype[2]]
+        STDERR.puts "*** Maybe try 'decode -88' ?"
         nil
       end
     end
