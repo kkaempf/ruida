@@ -13,12 +13,12 @@ module Ruida
     end
     def self.format
       { 0x01 => [ "Flags_CA_01", "flags"],
-        0x02 => [ "CA 02", :priority],
+        0x02 => [ "Layer_Setup_Begin", :layer],
         0x03 => [ "CA_03", -1],
         0x06 => [ "Layer_Color", :layer, :color],
         0x10 => [ "CA 10", -1],
         0x22 => [ "Layer_Count", -1],
-        0x41 => [ "Layer_CA_41", :layer, -1]
+        0x41 => [ "Layer_Setup_End", :layer, -1]
       }
     end
   end
