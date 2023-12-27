@@ -41,3 +41,8 @@ format) the scrambled values.
 
 Generates a [github flavored](https://github.github.com/gfm) [markdown](https://daringfireball.net/projects/markdown/syntax) table,
 listing all commands known to `decode`
+
+## Other references
+
+[meerk40t](https://github.com/meerk40t/meerk40t/blob/main/meerk40t/ruida/rdjob.py)
+has even more commands implemented.
